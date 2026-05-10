@@ -1,77 +1,115 @@
 version: '3.8'
 
 services:
-  # 1. Base de Datos (Persistencia Crítica - IE3)
+
+  #################################################
+  # MYSQL
+  #################################################
+
   db:
     image: mysql:8.0
     container_name: db-innovatech
     restart: always
+
     environment:
       MYSQL_ROOT_PASSWORD: root_password_segura
       MYSQL_DATABASE: innovatech_db
       MYSQL_USER: user_devops
       MYSQL_PASSWORD: password_devops
+
     ports:
       - "3306:3306"
+
     networks:
       - back-tier
+
     volumes:
       - db_data:/var/lib/mysql
 
-  # 2. Backend Despachos (IE6)
+  #################################################
+  # BACKEND DESPACHOS
+  #################################################
+
   backend-despachos:
     image: ${DOCKER_USERNAME}/back-despachos:latest
     container_name: api-despachos
+
     restart: always
+
     ports:
       - "8081:8080"
+
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/innovatech_db
-      - SPRING_DATASOURCE_USERNAME=user_devops
-      - SPRING_DATASOURCE_PASSWORD=password_devops
-    networks:
-      - back-tier
-      - front-tier
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/innovatech_db
+      SPRING_DATASOURCE_USERNAME: user_devops
+      SPRING_DATASOURCE_PASSWORD: password_devops
+
     depends_on:
       - db
 
-  # 3. Backend Ventas (IE6)
+    networks:
+      - back-tier
+      - front-tier
+
+  #################################################
+  # BACKEND VENTAS
+  #################################################
+
   backend-ventas:
     image: ${DOCKER_USERNAME}/back-ventas:latest
     container_name: api-ventas
+
     restart: always
+
     ports:
       - "8082:8080"
+
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/innovatech_db
-      - SPRING_DATASOURCE_USERNAME=user_devops
-      - SPRING_DATASOURCE_PASSWORD=password_devops
-    networks:
-      - back-tier
-      - front-tier
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/innovatech_db
+      SPRING_DATASOURCE_USERNAME: user_devops
+      SPRING_DATASOURCE_PASSWORD: password_devops
+
     depends_on:
       - db
 
-  # 4. Frontend (IE5 e IE7)
+    networks:
+      - back-tier
+      - front-tier
+
+  #################################################
+  # FRONTEND
+  #################################################
+
   frontend:
     image: ${DOCKER_USERNAME}/front-despachos:latest
     container_name: front-web
+
     restart: always
+
     ports:
-      - [cite_start]"80:8080" 
-    networks:
-      - front-tier
+      - "80:8080"
+
     depends_on:
       - backend-despachos
       - backend-ventas
 
-# Definición de Redes para aislamiento (Seguridad)
+    networks:
+      - front-tier
+
+#################################################
+# NETWORKS
+#################################################
+
 networks:
   front-tier:
     driver: bridge
+
   back-tier:
     driver: bridge
 
-# Definición de Volúmenes Nombrados (Persistencia)
+#################################################
+# VOLUMES
+#################################################
+
 volumes:
   db_data:
