@@ -7,11 +7,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // IP Privada de la instancia Backend (EC2-Backend)
+        // Asegúrate de que esta sea la IP privada actual de tu EC2-Backend
         target: 'http://10.0.135.230:8081/', 
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^/api/, '')
+        // CORRECCIÓN: Se agrega la \ antes de /api
+        rewrite: (path) => path.replace(/^/api/'')
       }
     }
   }
-});
+})
