@@ -10,8 +10,8 @@ export default defineConfig({
         // Asegúrate de que esta sea la IP privada actual de tu EC2-Backend
         target: 'http://10.0.135.230:8081/', 
         changeOrigin: true,
-        // CORRECCIÓN: Se agrega la \ antes de /api
-        rewrite: (path) => path.replace(/^/api/'')
+        // CORRECCIÓN: Se agregaron las barras / y la coma , correctamente
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }
