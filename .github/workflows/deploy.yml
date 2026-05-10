@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del código
+      - name: Checkout del cÃ³digo
         uses: actions/checkout@v3
 
       - name: Login Docker Hub
@@ -22,7 +22,6 @@ jobs:
       #################################################
       # BACKEND DESPACHOS
       #################################################
-
       - name: Build y Push Backend Despachos
         uses: docker/build-push-action@v4
         with:
@@ -34,7 +33,6 @@ jobs:
       #################################################
       # BACKEND VENTAS
       #################################################
-
       - name: Build y Push Backend Ventas
         uses: docker/build-push-action@v4
         with:
@@ -46,7 +44,6 @@ jobs:
       #################################################
       # FRONTEND
       #################################################
-
       - name: Build y Push Frontend
         uses: docker/build-push-action@v4
         with:
@@ -67,10 +64,13 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/${{ secrets.EC2_USER }}/tu-proyecto
+            # Entrar al directorio principal del usuario ubuntu
+            cd /home/${{ secrets.EC2_USER }}
 
+            # Definir variables necesarias
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
-            docker compose pull
-            docker compose down
-            docker compose up -d
+            # Usar sudo y docker-compose (con guion) que es el instalado en tu EC2
+            sudo docker-compose pull
+            sudo docker-compose down
+            sudo docker-compose up -d
