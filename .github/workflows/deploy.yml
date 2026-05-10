@@ -64,15 +64,16 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Ir al directorio personal
+            # 1. Entrar a la carpeta del proyecto
             cd /home/${{ secrets.EC2_USER }}
-
-            # Variables de entorno
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
-            # Usamos la ruta absoluta del binario para que no falle el "command not found"
-            # Generalmente está en /usr/bin/docker-compose o /usr/local/bin/docker-compose
-            # El comando 'sudo' es necesario para asegurar la ejecución
-            sudo docker-compose pull
-            sudo docker-compose down
-            sudo docker-compose up -d
+            # 2. OPCIÓN NUCLEAR: Descargar el binario directamente en una ruta conocida
+            # Esto ignora los repositorios de AWS y asegura que exista sí o sí
+            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+
+            # 3. EJECUTAR CON RUTA ABSOLUTA: Esto evita el error de "command not found"
+            sudo /usr/local/bin/docker-compose pull
+            sudo /usr/local/bin/docker-compose down
+            sudo /usr/local/bin/docker-compose up -d
