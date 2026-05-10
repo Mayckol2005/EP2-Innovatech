@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - deploy # El pipeline se activa al hacer push en la rama deploy
+      - deploy
 
 jobs:
   build-and-push:
@@ -23,7 +23,6 @@ jobs:
         with:
           context: .
           push: true
-          # IMPORTANTE: Cambia "miusuario/mi-repo" por el tuyo en cada proyecto
           tags: ${{ secrets.DOCKER_USERNAME }}/nombre-de-tu-app:latest 
 
   deploy-to-ec2:
@@ -36,7 +35,6 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          # El script que se ejecutará dentro de tu EC2
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/nombre-de-tu-app:latest
             docker-compose down
