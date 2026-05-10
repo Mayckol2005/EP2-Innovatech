@@ -67,8 +67,8 @@ jobs:
             # Entrar al proyecto
             cd /home/${{ secrets.EC2_USER }}
 
-            # Variable Docker Hub
-            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            # Crear archivo .env para Docker Compose
+            echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
 
             # Instalar Docker Compose
             sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
