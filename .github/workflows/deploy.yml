@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout del cÃ³digo
+      - name: Checkout del código
         uses: actions/checkout@v3
 
       - name: Login Docker Hub
@@ -64,13 +64,16 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Entrar al directorio principal del usuario ubuntu
+            # Ir al directorio del usuario
             cd /home/${{ secrets.EC2_USER }}
 
-            # Definir variables necesarias
+            # Variables de entorno
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
-            # Usar sudo y docker-compose (con guion) que es el instalado en tu EC2
-            sudo docker-compose pull
-            sudo docker-compose down
-            sudo docker-compose up -d
+            # Forzar actualización de docker-compose-plugin por si acaso
+            sudo apt-get update -y && sudo apt-get install -y docker-compose-plugin
+
+            # Ejecutar con el comando oficial de Docker V2 (sin guion)
+            docker compose pull
+            docker compose down
+            docker compose up -d
