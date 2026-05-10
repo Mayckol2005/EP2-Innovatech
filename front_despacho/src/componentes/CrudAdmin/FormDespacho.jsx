@@ -24,22 +24,26 @@ export const FormDespacho = ({ venta, onClose }) => {
     console.log("Datos del formulario:", jsonData);
 
     try {
+      // Corregido: Se usa /api para pasar por el proxy de Vite
       await axios.put(
-        `http://192.168.30/api/v1/ventas/${venta.idVenta}`,
+        `/api/v1/ventas/${venta.idVenta}`,
         jsonDataSales,
         {
           headers:{
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-      }
+          }
         }
       );
-      await axios.post("http://192.168.320/api/v1/despachos", jsonData, {
+      
+      // Corregido: Se usa /api para el POST de despachos
+      await axios.post("/api/v1/despachos", jsonData, {
         headers:{
           'Content-Type': 'application/json',
           'Accept': 'application/json'
-    }
+        }
       });
+
       Swal.fire({
         title: "Despacho registrado 🛻!",
         text: "El despacho ha sido generado con éxito en la base de datos",
@@ -48,9 +52,15 @@ export const FormDespacho = ({ venta, onClose }) => {
       });
     } catch (error) {
       console.error("Error en la solicitud:", error);
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo registrar el despacho. Revisa la conexión al backend.",
+        icon: "error",
+      });
     }
     onClose();
   };
+
   return (
     <>
       <form
@@ -64,7 +74,6 @@ export const FormDespacho = ({ venta, onClose }) => {
           <label className="block font-bold mb-2">Fecha de despacho</label>
           <input
             type="date"
-            placeholder="Ingresa fecha de despacho"
             className="border border-gray-300 rounded-lg block w-full p-1"
             {...register("fechaDespacho", { required: true })}
           />
@@ -73,7 +82,7 @@ export const FormDespacho = ({ venta, onClose }) => {
           <label className="block font-bold mb-2">Patente de camión</label>
           <input
             type="text"
-            placeholder="Elige patente de camión"
+            placeholder="Ej: ABCD-12"
             className="border border-gray-300 rounded-lg block w-full p-1"
             {...register("patenteCamion", { required: true })}
           />
@@ -109,7 +118,7 @@ export const FormDespacho = ({ venta, onClose }) => {
         </div>
 
         <button
-          className="py-6 px-14 rounded-lg bg-teal-600 text-white font-bold mb-14"
+          className="py-6 px-14 rounded-lg bg-teal-600 text-white font-bold mb-14 hover:bg-teal-700 transition-colors"
           type="submit"
         >
           Asignar despacho

@@ -7,10 +7,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://qic534o8o0.execute-api.us-east-1.amazonaws.com',
+        // IP Privada de la instancia Backend (EC2-Backend)
+        target: 'http://10.0.135.230:8081/', 
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => path.replace(/^/api/, '')
       }
     }
   }
-})
+});

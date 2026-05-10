@@ -7,16 +7,22 @@ export const TableCompras = () => {
   const [ventas, setVentas] = useState([]);
 
   const compras = async () => {
-    await axios.get("http://192.168.30/api/v1/ventas", {
+    // Corregido: Se usa /api para pasar por el proxy de Vite hacia la EC2 Privada
+    await axios.get("/api/v1/ventas", {
       headers:{
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-  }
-    }).then((response) => {
+      }
+    })
+    .then((response) => {
       console.log(response.data);
       setVentas(response.data);
+    })
+    .catch((error) => {
+      console.error("Error al obtener ventas:", error);
     });
   };
+
   // Llamada a la función para obtener los datos cuando el componente se monta
   useEffect(() => {
     compras();
@@ -41,10 +47,10 @@ export const TableCompras = () => {
               <thead>
                 <tr className="py-10">
                   <th className="pr-10">Orden de compra</th>
-                  <th className="pr-10">direccion</th>
-                  <th className="pr-10">fecha de compra</th>
-                  <th className="pr-10">valor total</th>
-                  <th className="pr-10"></th>
+                  <th className="pr-10">Dirección</th>
+                  <th className="pr-10">Fecha de compra</th>
+                  <th className="pr-10">Valor total</th>
+                  <th className="pr-10">Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -55,13 +61,13 @@ export const TableCompras = () => {
                       <td className="pr-10 py-10 items-center">
                         {venta.idVenta}
                       </td>
-                      <td className="pr-10 py-10  items-center">
+                      <td className="pr-10 py-10 items-center">
                         {venta.direccionCompra}
                       </td>
-                      <td className="pr-10 py-10  items-center">
+                      <td className="pr-10 py-10 items-center">
                         {venta.fechaCompra}
                       </td>
-                      <td className="pr-10 py-10  items-center">
+                      <td className="pr-10 py-10 items-center">
                         ${venta.valorCompra}
                       </td>
                       <td>
@@ -89,8 +95,8 @@ export const TableCompras = () => {
           <FormDespacho
             venta={ventaSeleccionada}
             onClose={() => {
-              //onclose es un prop que pasa funciones al modal con el form abierto, por ende al cerrarse, se ejecutan esas 2 funciones
-              setOpenModal(false), compras();
+              setOpenModal(false);
+              compras();
             }}
           />
         )}
