@@ -64,16 +64,15 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Ir al directorio del usuario
+            # Ir al directorio personal
             cd /home/${{ secrets.EC2_USER }}
 
             # Variables de entorno
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
-            # Forzar actualización de docker-compose-plugin por si acaso
-            sudo apt-get update -y && sudo apt-get install -y docker-compose-plugin
-
-            # Ejecutar con el comando oficial de Docker V2 (sin guion)
-            docker compose pull
-            docker compose down
-            docker compose up -d
+            # Usamos la ruta absoluta del binario para que no falle el "command not found"
+            # Generalmente está en /usr/bin/docker-compose o /usr/local/bin/docker-compose
+            # El comando 'sudo' es necesario para asegurar la ejecución
+            sudo docker-compose pull
+            sudo docker-compose down
+            sudo docker-compose up -d
