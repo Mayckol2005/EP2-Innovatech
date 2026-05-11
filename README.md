@@ -182,3 +182,88 @@ Se implementó un pipeline automatizado utilizando GitHub Actions.
 - Pipeline centralizado
 
 ---
+# Infraestructura Cloud ☁️
+
+La aplicación fue desplegada utilizando una instancia EC2 en AWS.
+
+## Componentes utilizados
+
+- EC2
+- Security Groups
+- Docker Engine
+- Docker Compose
+- Linux Server
+
+## Seguridad
+
+Se configuraron reglas de acceso para:
+
+- HTTP
+- SSH
+- Comunicación interna entre servicios
+
+---
+
+# Estructura del Proyecto
+
+```bash
+EP2-Innovatech/
+│
+├── front_despacho/
+│
+├── back-Ventas_SpringBoot/
+│
+├── back-Despachos_SpringBoot/
+│
+├── docker-compose.yml
+│
+└── .github/workflows/
+```
+
+---
+
+# Ejecución del Proyecto
+
+## Clonar repositorio
+
+```bash
+git clone <URL_DEL_REPOSITORIO>
+```
+
+## Levantar servicios
+
+```bash
+docker compose up --build
+```
+
+## Ver contenedores activos
+
+```bash
+docker ps
+```
+
+---
+
+# Evidencias
+
+## Frontend en ejecución
+
+```bash
+http://localhost
+```
+
+## APIs Backend
+
+### Backend Ventas
+
+```bash
+http://localhost:8081
+```
+
+### Backend Despachos
+
+```bash
+http://localhost:8080
+```
+
+---
