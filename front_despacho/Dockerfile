@@ -1,13 +1,17 @@
-# Etapa 1: Build (Construcción)
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS build
+
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm ci
+RUN npm install
+
 COPY . .
 RUN npm run build
 
-# Etapa 2: Producción (Usuario no root por seguridad)
-FROM nginxinc/nginx-unprivileged:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
 EXPOSE 8080
+
 CMD ["nginx", "-g", "daemon off;"]

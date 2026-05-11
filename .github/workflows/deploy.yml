@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Build and Push Deploy
 
 on:
   push:
@@ -6,76 +6,63 @@ on:
       - deploy
 
 jobs:
-  build-and-push:
+  build-push-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout del código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Login Docker Hub
-        uses: docker/login-action@v2
+      - name: Login Docker
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      #################################################
-      # BACKEND DESPACHOS
-      #################################################
-      - name: Build y Push Backend Despachos
-        uses: docker/build-push-action@v4
+      - name: Build y push backend 1
+        uses: docker/build-push-action@v6
         with:
           context: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
-          file: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/back-despachos:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/backend-despachos:latest
 
-      #################################################
-      # BACKEND VENTAS
-      #################################################
-      - name: Build y Push Backend Ventas
-        uses: docker/build-push-action@v4
+      - name: Build y push backend 2
+        uses: docker/build-push-action@v6
         with:
           context: ./back-Ventas_SpringBoot/Springboot-API-REST
-          file: ./back-Ventas_SpringBoot/Springboot-API-REST/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/back-ventas:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/backend-ventas:latest
 
-      #################################################
-      # FRONTEND
-      #################################################
-      - name: Build y Push Frontend
-        uses: docker/build-push-action@v4
+      - name: Build y push frontend
+        uses: docker/build-push-action@v6
         with:
           context: ./front_despacho
-          file: ./front_despacho/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/front-despachos:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/frontend-despacho:latest
 
-  deploy-to-ec2:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy en EC2
-        uses: appleboy/ssh-action@master
+      - name: Deploy backend ec2
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.EC2_BACKEND_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          proxy_host: ${{ secrets.EC2_FRONTEND_HOST }}
+          proxy_username: ${{ secrets.EC2_USER }}
+          proxy_key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ec2-user/
+            docker compose down 
+            docker compose pull
+            docker compose up -d 
+
+      - name: Deploy frontend ec2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_FRONTEND_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Entrar al proyecto
-            cd /home/${{ secrets.EC2_USER }}
-
-            # Crear archivo .env para Docker Compose
-            echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
-
-            # Instalar Docker Compose
-            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-            sudo chmod +x /usr/local/bin/docker-compose
-
-            # Deploy
-            sudo /usr/local/bin/docker-compose pull
-            sudo /usr/local/bin/docker-compose down
-            sudo /usr/local/bin/docker-compose up -d
+            cd /home/ec2-user/
+            docker compose down 
+            docker compose pull
+            docker compose up -d 

@@ -1,16 +1,23 @@
-# Etapa 1: Build (Construcción con dependencias cacheadas)
-FROM maven:3.8.5-openjdk-17-slim AS builder
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+
 WORKDIR /app
+
 COPY pom.xml .
-RUN mvn dependency:go-offline
+RUN mvn dependency:go-offline -B
+
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Producción (Usuario no root 'spring' por seguridad)
-FROM eclipse-temurin:17-jre-jammy
+FROM eclipse-temurin:17-jre-alpine
+
 WORKDIR /app
-RUN groupadd -r spring && useradd -r -g spring spring
-USER spring:spring
-COPY --from=builder /app/target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+USER appuser
+
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]
