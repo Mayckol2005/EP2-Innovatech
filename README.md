@@ -1,4 +1,4 @@
-# 📦 Innovatech Chile - Gestión de Microservicios EP2
+# Innovatech Chile - Gestión de Microservicios EP2
 
 ### Infraestructura DevOps: Contenerización, Cloud y Automatización
 
@@ -17,7 +17,7 @@
 
 ---
 
-## 🚀 Introducción
+## Introducción
 Este proyecto implementa una arquitectura de microservicios robusta para **Innovatech Chile**, diseñada bajo la metodología DevOps. La solución abarca desde el desarrollo contenerizado con Docker hasta el despliegue automatizado (CI/CD) en la nube de AWS.
 
 El objetivo principal es garantizar que cada cambio en el código se despliegue de forma segura, rápida y sin intervención manual, cumpliendo con los estándares de escalabilidad exigidos.
@@ -37,7 +37,7 @@ El objetivo principal es garantizar que cada cambio en el código se despliegue 
 | **Base de Datos** | MySQL / PostgreSQL |
 
 ---
-## 🏗️ Arquitectura de Microservicios (IE7)
+## Arquitectura de Microservicios (IE7)
 
 La solución se divide en tres componentes principales, cada uno aislado en su propio contenedor pero comunicados mediante una red interna de Docker:
 
@@ -48,7 +48,7 @@ La solución se divide en tres componentes principales, cada uno aislado en su p
 
 ---
 
-## 🐳 Contenerización (IE2 & IE6)
+## Contenerización (IE2 & IE6)
 
 Se han implementado Dockerfiles optimizados para cada servicio, destacando las siguientes prácticas:
 
