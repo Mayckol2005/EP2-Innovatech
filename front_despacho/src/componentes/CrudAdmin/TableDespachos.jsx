@@ -6,6 +6,7 @@ import { FormCierreDespacho } from "./FormCierreDespacho";
 export const TableDespachos = () => {
   const [despachos, setDespachos] = useState([]);
 
+  //Cambios
   const despacho = async () => {
     await axios
       .get("/api/v1/despachos", {
