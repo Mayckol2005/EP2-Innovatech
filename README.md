@@ -37,23 +37,148 @@ El objetivo principal es garantizar que cada cambio en el código se despliegue 
 | **Base de Datos** | MySQL / PostgreSQL |
 
 ---
-## Arquitectura de Microservicios (IE7)
+# Arquitectura del Sistema
 
-La solución se divide en tres componentes principales, cada uno aislado en su propio contenedor pero comunicados mediante una red interna de Docker:
+La arquitectura del proyecto se encuentra dividida en tres componentes principales:
 
-* **`front_despacho`**: Interfaz de usuario servida mediante Nginx optimizado.
-* **`back-Ventas_SpringBoot`**: Microservicio encargado de la lógica comercial.
-* **`back-Despachos_SpringBoot`**: Microservicio para la gestión logística.
-* **Persistencia**: Base de datos gestionada mediante volúmenes para asegurar que los datos no se pierdan al reiniciar contenedores.
+## Frontend
+
+Aplicación web encargada de la interacción con el usuario.
+
+### Características
+
+- Interfaz responsive
+- Comunicación con APIs REST
+- Despliegue mediante Nginx
+- Contenerización independiente
 
 ---
 
-## Contenerización (IE2 & IE6)
+## Backend de Ventas
 
-Se han implementado Dockerfiles optimizados para cada servicio, destacando las siguientes prácticas:
+Microservicio encargado de la lógica de ventas.
 
-1.  **Multi-stage Builds**: Separamos la construcción del artefacto (Maven/Node) de la imagen final de ejecución para reducir el peso y mejorar la seguridad.
-2.  **Seguridad**: Configuración de usuarios no-root para la ejecución de procesos dentro del contenedor.
-3.  **Orquestación**: Uso de un archivo `docker-compose.yml` centralizado para gestionar variables de entorno, redes y dependencias entre servicios.
+### Funcionalidades
+
+- Gestión de productos
+- Gestión de ventas
+- API REST
+- Conexión a base de datos MySQL
+
+---
+
+## Backend de Despachos
+
+Microservicio encargado de la gestión logística y despachos.
+
+### Funcionalidades
+
+- Administración de despachos
+- Gestión de estados de entrega
+- API REST independiente
+- Comunicación mediante Docker Network
+
+---
+
+# Contenerización 🐳
+
+Cada componente del sistema fue contenerizado utilizando Docker.
+
+## Frontend
+
+Ubicación:
+
+```bash
+/front_despacho
+```
+
+### Tecnologías utilizadas
+
+- Node.js
+- HTML/CSS/JS
+- Nginx
+
+### Características implementadas
+
+- Multi-stage build
+- Optimización de imagen
+- Exposición mediante puerto HTTP
+
+---
+
+## Backend Ventas
+
+Ubicación:
+
+```bash
+/back-Ventas_SpringBoot
+```
+
+### Características
+
+- Maven build
+- Aplicación Spring Boot
+- Empaquetado `.jar`
+- Puerto expuesto para API REST
+
+---
+
+## Backend Despachos
+
+Ubicación:
+
+```bash
+/back-Despachos_SpringBoot
+```
+
+### Características
+
+- Arquitectura REST
+- Maven
+- Ejecución independiente
+- Comunicación interna mediante Docker
+
+---
+
+# Orquestación con Docker Compose
+
+La infraestructura completa fue orquestada utilizando Docker Compose.
+
+## Servicios implementados
+
+| Servicio | Función | Puerto |
+|----------|----------|---------|
+| `frontend` | Interfaz cliente | 80 |
+| `backend-ventas` | API ventas | 8081 |
+| `backend-despachos` | API despachos | 8080 |
+| `mysql-db` | Base de datos | 3306 |
+
+## Características implementadas
+
+- Redes internas entre contenedores
+- Persistencia mediante volúmenes
+- Comunicación entre microservicios
+- Inicialización automática de servicios
+
+---
+
+# Pipeline CI/CD ⚙️
+
+Se implementó un pipeline automatizado utilizando GitHub Actions.
+
+## Flujo de Automatización
+
+1. Push a rama principal
+2. Build automático de contenedores
+3. Verificación de servicios
+4. Despliegue en servidor cloud
+5. Actualización automática de contenedores
+
+## Características implementadas
+
+- Automatización de despliegues
+- Uso de GitHub Secrets
+- Integración con Docker
+- Pipeline centralizado
 
 ---
