@@ -148,9 +148,9 @@ La infraestructura completa fue orquestada utilizando Docker Compose.
 
 | Servicio | Función | Puerto |
 |----------|----------|---------|
-| `frontend` | Interfaz cliente | 80 |
-| `backend-ventas` | API ventas | 8081 |
-| `backend-despachos` | API despachos | 8080 |
+| `frontend` | Interfaz cliente | 8080 |
+| `backend-ventas` | API ventas | 8082 |
+| `backend-despachos` | API despachos | 8081 |
 | `mysql-db` | Base de datos | 3306 |
 
 ## Características implementadas
