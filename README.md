@@ -227,7 +227,7 @@ EP2-Innovatech/
 ## Clonar repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/Mayckol2005/EP2-Innovatech.git
 ```
 
 ## Levantar servicios
