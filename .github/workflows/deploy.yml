@@ -57,29 +57,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy backend 
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy en EC2
+        uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_BACKEND_HOST }}
+          host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          proxy_host: ${{ secrets.EC2_FRONTEND_HOST }}
-          proxy_username: ${{ secrets.EC2_USER }}
-          proxy_key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Entrar al proyecto
             cd /home/${{ secrets.EC2_USER }}
-            docker compose down --remove-orphans
-            docker compose pull
-            docker compose up -d --force-recreate
 
-      - name: Deploy frontend 
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_FRONTEND_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/${{ secrets.EC2_USER }}
-            docker compose down --remove-orphans
-            docker compose pull
-            docker compose up -d --force-recreate
+            # Crear archivo .env para Docker Compose
+            echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
+
+            # Instalar Docker Compose
+            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+            sudo chmod +x /usr/local/bin/docker-compose
+
+            # Deploy
+            sudo /usr/local/bin/docker-compose pull
+            sudo /usr/local/bin/docker-compose down
+            sudo /usr/local/bin/docker-compose up -d
