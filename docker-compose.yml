@@ -1,91 +1,55 @@
-name: CI/CD Pipeline
+version: '3.8'
 
-on:
-  push:
-    branches:
-      - deploy
+services:
+  db:
+    image: mysql:8.0
+    container_name: db_innovatech
+    restart: always
+    environment:
+      MYSQL_DATABASE: innovatech_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend-network
 
-jobs:
+  backend-ventas:
+    image: colmay2005/innovatech-back-ventas:latest
+    container_name: back_ventas
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/innovatech_db
+      SPRING_DATASOURCE_USERNAME: dbuser
+      SPRING_DATASOURCE_PASSWORD: dbpassword
+    depends_on:
+      - db
+    networks:
+      - backend-network
 
-  #################################################
-  # BUILD + PUSH DOCKER HUB
-  #################################################
+  backend-despachos:
+    image: colmay2005/innovatech-back-despachos:latest
+    container_name: back_despachos
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/innovatech_db
+      SPRING_DATASOURCE_USERNAME: dbuser
+      SPRING_DATASOURCE_PASSWORD: dbpassword
+    depends_on:
+      - db
+    networks:
+      - backend-network
 
-  build-and-push:
-    runs-on: ubuntu-latest
+volumes:
+  db_data:
 
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v3
-
-      #################################################
-      # LOGIN DOCKER HUB
-      #################################################
-
-      - name: Login Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      #################################################
-      # BACKEND DESPACHOS
-      #################################################
-
-      - name: Build y Push Backend Despachos
-        uses: docker/build-push-action@v4
-        with:
-          context: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
-          file: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/back-despachos:latest
-
-      #################################################
-      # BACKEND VENTAS
-      #################################################
-
-      - name: Build y Push Backend Ventas
-        uses: docker/build-push-action@v4
-        with:
-          context: ./back-Ventas_SpringBoot/Springboot-API-REST
-          file: ./back-Ventas_SpringBoot/Springboot-API-REST/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/back-ventas:latest
-
-      #################################################
-      # FRONTEND
-      #################################################
-
-      - name: Build y Push Frontend
-        uses: docker/build-push-action@v4
-        with:
-          context: ./front_despacho
-          file: ./front_despacho/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/front-despachos:latest
-
-  #################################################
-  # DEPLOY EC2
-  #################################################
-
-  deploy-to-ec2:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy en EC2
-        uses: appleboy/ssh-action@v1.0.3
-
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-
-          script: |
-            cd /home/${{ secrets.EC2_USER }}
-
-            docker compose pull
-
-            docker compose down
-
-            docker compose up -d
+networks:
+  backend-network:
+    driver: bridge
