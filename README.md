@@ -249,7 +249,7 @@ docker ps
 ## Frontend en ejecución
 
 ```bash
-http://localhost
+IP_PUBLICA:8080
 ```
 
 ## APIs Backend
