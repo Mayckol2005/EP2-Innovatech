@@ -12,5 +12,5 @@ WORKDIR /app
 RUN groupadd -r spring && useradd -r -g spring spring
 USER spring:spring
 COPY --from=builder /app/target/*.jar app.jar
-EXPOSE 8081
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
