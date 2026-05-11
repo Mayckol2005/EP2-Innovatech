@@ -7,7 +7,6 @@ export const TableDespachos = () => {
   const [despachos, setDespachos] = useState([]);
 
   const despacho = async () => {
-    // Se cambia la IP local por la ruta del proxy /api
     await axios
       .get("/api/v1/despachos", {
         headers:{
