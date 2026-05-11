@@ -266,4 +266,26 @@ http://localhost:8081
 http://localhost:8080
 ```
 
+# Resultados Obtenidos
+
+El proyecto permitió implementar exitosamente:
+
+- Arquitectura basada en microservicios
+- Despliegue cloud
+- Contenerización completa
+- Integración continua
+- Automatización de despliegues
+- Separación de responsabilidades
+- Comunicación entre servicios
+
+---
+
+# Conclusión
+
+Este proyecto permitió aplicar herramientas modernas de desarrollo e infraestructura utilizando metodologías DevOps.
+
+La integración de tecnologías como Docker, Spring Boot y GitHub Actions permitió construir una solución modular, automatizada y preparada para futuros entornos productivos.
+
+Además, la arquitectura implementada facilita futuras mejoras, escalabilidad y mantenimiento del sistema.
+
 ---
