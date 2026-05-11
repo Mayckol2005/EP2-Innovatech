@@ -28,7 +28,7 @@ El objetivo principal es garantizar que cada cambio en el código se despliegue 
 
 | Capa | Tecnología |
 | :--- | :--- |
-| **Infraestructura** | AWS EC2 (Ubuntu Server) |
+| **Infraestructura** | AWS EC2 (Amazon Linux) |
 | **Orquestación** | Docker & Docker Compose |
 | **CI/CD** | GitHub Actions & Docker Hub |
 | **Backend 1** | Java - Spring Boot (Ventas) |
