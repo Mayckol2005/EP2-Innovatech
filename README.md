@@ -4,7 +4,7 @@
 
 ---
 
-## 📋 Información General
+## Información General
 
 | Campo             | Detalles                           |
 | ----------------- | ---------------------------------- |
@@ -24,7 +24,7 @@ El objetivo principal es garantizar que cada cambio en el código se despliegue 
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 | Capa | Tecnología |
 | :--- | :--- |
